@@ -1,6 +1,6 @@
 const Organization = require('../models/Organization');
 
-exports.testOrganization = (req, res) => {
+const testOrganization = (req, res) => {
     res.send("Hello from Organizations API!");
 };
 
@@ -34,4 +34,7 @@ const registerOrganization = async (req, res) => {
     }
 };
 
-module.exports = { registerOrganization };
+module.exports = { 
+    testOrganization,
+    registerOrganization 
+};
