@@ -1,3 +1,3 @@
-exports.test = (req, res) => {
-    res.send('🏢 Hello from Organizations API!');
+exports.testOrganization = (req, res) => {
+    res.send("Hello from Organizations API!");
 };

@@ -1,3 +1,3 @@
 exports.testAdmin = (req, res) => {
-  res.send('👑 Hello from Admin API!');
+    res.send("Hello from Admin API!");
 };

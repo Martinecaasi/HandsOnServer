@@ -1,7 +1,7 @@
 const express = require('express');
 const app = express();
 
-// Middlewares
+// Middleware
 app.use(express.json());
 
 // Routes
@@ -12,6 +12,5 @@ const adminRoutes = require('./routes/adminRoutes');
 app.use('/api/volunteers', volunteerRoutes);
 app.use('/api/organizations', organizationRoutes);
 app.use('/api/admins', adminRoutes);
-
 
 module.exports = app;
