@@ -2,10 +2,19 @@ const express = require('express');
 const router = express.Router();
 const organizationController = require('../controllers/organizationController');
 
-// Test route
+// בדיקה
 router.get('/test', organizationController.testOrganization);
 
-// Register
+// רישום ארגון חדש
 router.post('/register', organizationController.registerOrganization);
+
+// קבלת כל הארגונים
+router.get('/', organizationController.getAllOrganizations);
+
+// עדכון ארגון לפי ID
+router.put('/:id', organizationController.updateOrganization);
+
+// מחיקת ארגון לפי ID
+router.delete('/:id', organizationController.deleteOrganization);
 
 module.exports = router;
