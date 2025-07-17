@@ -38,7 +38,9 @@ const getAllEvents = async (req, res) => {
 const getEventById = async (req, res) => {
     try {
         const { eventId } = req.params;
-        const event = await Event.findById(eventId);
+        const event = await Event.findById(eventId)
+        .populate('createdBy','organizationName')
+        .populate('participants','fullName');
         if (!event) {
             return res.status(404).json({ message: 'event not found' });
         }
@@ -121,7 +123,8 @@ const leaveEvent = async (req, res) => {
 const getParticipants = async (req, res) => {
     try {
         const { eventId } = req.params;
-        const event = await Event.findById(eventId);
+        const event = await Event.findById(eventId)
+        .populate('participants','fullName');
         if (!event) {
             return res.status(404).json({ message: 'event not found' });
         }
