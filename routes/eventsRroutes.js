@@ -11,4 +11,5 @@ router.get('/:eventId/participants',eventController.getParticipants);
 router.get('/:eventId' , eventController.getEventById);
 router.put('/:eventId' , eventController.updateEvent);
 router.delete('/:eventId' , eventController.deleteEvent);
+router.get('/registered/:userId', eventController.getRegisteredEvents);
 module.exports = router;

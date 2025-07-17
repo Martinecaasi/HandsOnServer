@@ -136,6 +136,19 @@ const getParticipants = async (req, res) => {
     }
 };
 
+const getRegisteredEvents = async (req, res) => {
+    try {
+        const { userId } = req.params;
+        const events = await Event.find({ participants: userId })
+            .populate('createdBy', 'fullName')
+            .populate('participants', 'fullName');
+
+        res.status(200).json(events);
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ message: 'Error fetching registered events', error: err.message });
+    }
+};
 module.exports = {
     testEvent,
     createEvent,
@@ -145,5 +158,6 @@ module.exports = {
     deleteEvent,
     joinEvent,
     leaveEvent,
-    getParticipants
+    getParticipants,
+    getRegisteredEvents
 };
