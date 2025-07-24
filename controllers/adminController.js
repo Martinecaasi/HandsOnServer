@@ -2,7 +2,7 @@
 const Admin = require('../models/Admin');
 const bcrypt = require('bcrypt');
 
-// פונקציית בדיקה שה-API עובד
+// פונקציית בדיקה שה-API של אדמינים פעיל
 exports.testAdmin = (req, res) => {
     res.send("👋 Hello from Admin API!");
 };
@@ -15,7 +15,7 @@ exports.registerAdmin = async (req, res) => {
         // בדיקה אם כבר קיים אדמין עם אותו מייל
         const existingAdmin = await Admin.findOne({ email });
         if (existingAdmin) {
-            return res.status(400).json({ message: 'Admin עם מייל זה כבר קיים' });
+            return res.status(400).json({ message: 'An admin with this email already exists' });
         }
 
         // יצירת אדמין חדש
@@ -23,11 +23,11 @@ exports.registerAdmin = async (req, res) => {
         await newAdmin.save();
 
         res.status(201).json({
-            message: 'Admin נרשם בהצלחה',
+            message: 'Admin registered successfully',
             admin: newAdmin
         });
     } catch (err) {
-        res.status(500).json({ message: 'שגיאה ביצירת Admin', error: err.message });
+        res.status(500).json({ message: 'Error registering admin', error: err.message });
     }
 };
 
@@ -36,20 +36,20 @@ exports.loginAdmin = async (req, res) => {
     try {
         const { email, password } = req.body;
 
-        // בדיקה אם קיים אדמין עם המייל הזה
+        // חיפוש אדמין לפי מייל
         const admin = await Admin.findOne({ email });
         if (!admin) {
-            return res.status(404).json({ message: 'Admin לא נמצא' });
+            return res.status(404).json({ message: 'Admin not found' });
         }
 
         // השוואת סיסמה עם bcrypt
         const isMatch = await bcrypt.compare(password, admin.password);
         if (!isMatch) {
-            return res.status(401).json({ message: 'סיסמה שגויה' });
+            return res.status(401).json({ message: 'Incorrect password' });
         }
 
         res.status(200).json({
-            message: 'התחברות הצליחה',
+            message: 'Login successful',
             admin: {
                 id: admin._id,
                 fullName: admin.fullName,
@@ -57,7 +57,7 @@ exports.loginAdmin = async (req, res) => {
             }
         });
     } catch (err) {
-        res.status(500).json({ message: 'שגיאה בהתחברות', error: err.message });
+        res.status(500).json({ message: 'Error logging in', error: err.message });
     }
 };
 
@@ -67,11 +67,11 @@ exports.getAllAdmins = async (req, res) => {
         const admins = await Admin.find();
         res.status(200).json(admins);
     } catch (err) {
-        res.status(500).json({ message: 'שגיאה בקבלת האדמינים', error: err.message });
+        res.status(500).json({ message: 'Error fetching admins', error: err.message });
     }
 };
 
-// עדכון אדמין לפי ID
+// עדכון אדמין לפי מזהה
 exports.updateAdmin = async (req, res) => {
     try {
         const { id } = req.params;
@@ -80,19 +80,19 @@ exports.updateAdmin = async (req, res) => {
         const updatedAdmin = await Admin.findByIdAndUpdate(id, updatedData, { new: true });
 
         if (!updatedAdmin) {
-            return res.status(404).json({ message: 'Admin לא נמצא' });
+            return res.status(404).json({ message: 'Admin not found' });
         }
 
         res.status(200).json({
-            message: 'Admin עודכן בהצלחה',
+            message: 'Admin updated successfully',
             admin: updatedAdmin
         });
     } catch (err) {
-        res.status(500).json({ message: 'שגיאה בעדכון Admin', error: err.message });
+        res.status(500).json({ message: 'Error updating admin', error: err.message });
     }
 };
 
-// מחיקת אדמין לפי ID
+// מחיקת אדמין לפי מזהה
 exports.deleteAdmin = async (req, res) => {
     try {
         const { id } = req.params;
@@ -100,11 +100,11 @@ exports.deleteAdmin = async (req, res) => {
         const deletedAdmin = await Admin.findByIdAndDelete(id);
 
         if (!deletedAdmin) {
-            return res.status(404).json({ message: 'Admin לא נמצא' });
+            return res.status(404).json({ message: 'Admin not found' });
         }
 
-        res.status(200).json({ message: 'Admin נמחק בהצלחה' });
+        res.status(200).json({ message: 'Admin deleted successfully' });
     } catch (err) {
-        res.status(500).json({ message: 'שגיאה במחיקת Admin', error: err.message });
+        res.status(500).json({ message: 'Error deleting admin', error: err.message });
     }
 };
