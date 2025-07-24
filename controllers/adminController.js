@@ -1,5 +1,6 @@
 // controller לניהול אדמינים במערכת Hands On
 const Admin = require('../models/Admin');
+const bcrypt = require('bcrypt');
 
 // פונקציית בדיקה שה-API עובד
 exports.testAdmin = (req, res) => {
@@ -18,12 +19,7 @@ exports.registerAdmin = async (req, res) => {
         }
 
         // יצירת אדמין חדש
-        const newAdmin = new Admin({
-            fullName,
-            email,
-            password
-        });
-
+        const newAdmin = new Admin({ fullName, email, password });
         await newAdmin.save();
 
         res.status(201).json({
@@ -31,12 +27,11 @@ exports.registerAdmin = async (req, res) => {
             admin: newAdmin
         });
     } catch (err) {
-        console.error(err);
         res.status(500).json({ message: 'שגיאה ביצירת Admin', error: err.message });
     }
 };
 
-// התחברות אדמין
+// התחברות אדמין עם השוואת סיסמה מוצפנת
 exports.loginAdmin = async (req, res) => {
     try {
         const { email, password } = req.body;
@@ -47,8 +42,9 @@ exports.loginAdmin = async (req, res) => {
             return res.status(404).json({ message: 'Admin לא נמצא' });
         }
 
-        // בדיקה אם הסיסמה תואמת
-        if (admin.password !== password) {
+        // השוואת סיסמה עם bcrypt
+        const isMatch = await bcrypt.compare(password, admin.password);
+        if (!isMatch) {
             return res.status(401).json({ message: 'סיסמה שגויה' });
         }
 
@@ -61,7 +57,6 @@ exports.loginAdmin = async (req, res) => {
             }
         });
     } catch (err) {
-        console.error(err);
         res.status(500).json({ message: 'שגיאה בהתחברות', error: err.message });
     }
 };
@@ -72,7 +67,6 @@ exports.getAllAdmins = async (req, res) => {
         const admins = await Admin.find();
         res.status(200).json(admins);
     } catch (err) {
-        console.error(err);
         res.status(500).json({ message: 'שגיאה בקבלת האדמינים', error: err.message });
     }
 };
@@ -94,7 +88,6 @@ exports.updateAdmin = async (req, res) => {
             admin: updatedAdmin
         });
     } catch (err) {
-        console.error(err);
         res.status(500).json({ message: 'שגיאה בעדכון Admin', error: err.message });
     }
 };
@@ -112,7 +105,6 @@ exports.deleteAdmin = async (req, res) => {
 
         res.status(200).json({ message: 'Admin נמחק בהצלחה' });
     } catch (err) {
-        console.error(err);
         res.status(500).json({ message: 'שגיאה במחיקת Admin', error: err.message });
     }
 };

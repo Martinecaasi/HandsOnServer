@@ -9,10 +9,12 @@ const organizationSchema = new mongoose.Schema({
   phoneNumber: { type: String, required: true },
   description: { type: String },
   profileImage: { type: String },
-  isPrivate: { type: Boolean, default: false }
-}, { timestamps: true }); // מוסיף createdAt ו-updatedAt אוטומטית
+  isPrivate: { type: Boolean, default: false },
+  about: { type: String },
+  handsNeeded: { type: Number }
+}, { timestamps: true });
 
-// הצפנת סיסמה לפני שמירת הארגון
+// הצפנת סיסמה לפני שמירה
 organizationSchema.pre('save', async function (next) {
   if (!this.isModified('password')) return next();
   try {
