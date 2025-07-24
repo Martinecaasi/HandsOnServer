@@ -6,7 +6,7 @@ exports.testAdmin = (req, res) => {
     res.send("👋 Hello from Admin API!");
 };
 
-// 📥 רישום אדמין חדש
+// רישום אדמין חדש
 exports.registerAdmin = async (req, res) => {
     try {
         const { fullName, email, password } = req.body;
@@ -36,7 +36,7 @@ exports.registerAdmin = async (req, res) => {
     }
 };
 
-// 🔑 התחברות אדמין
+// התחברות אדמין
 exports.loginAdmin = async (req, res) => {
     try {
         const { email, password } = req.body;
@@ -66,7 +66,7 @@ exports.loginAdmin = async (req, res) => {
     }
 };
 
-// 📄 קבלת כל האדמינים
+// קבלת כל האדמינים
 exports.getAllAdmins = async (req, res) => {
     try {
         const admins = await Admin.find();
@@ -77,7 +77,7 @@ exports.getAllAdmins = async (req, res) => {
     }
 };
 
-// ✏️ עדכון אדמין לפי ID
+// עדכון אדמין לפי ID
 exports.updateAdmin = async (req, res) => {
     try {
         const { id } = req.params;
@@ -99,7 +99,7 @@ exports.updateAdmin = async (req, res) => {
     }
 };
 
-// 🗑️ מחיקת אדמין לפי ID
+// מחיקת אדמין לפי ID
 exports.deleteAdmin = async (req, res) => {
     try {
         const { id } = req.params;
