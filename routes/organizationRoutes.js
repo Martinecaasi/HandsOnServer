@@ -8,6 +8,9 @@ router.get('/test', organizationController.testOrganization);
 // רישום ארגון חדש
 router.post('/register', organizationController.registerOrganization);
 
+// התחברות ארגון
+router.post('/login', organizationController.loginOrganization);
+
 // קבלת כל הארגונים
 router.get('/', organizationController.getAllOrganizations);
 

@@ -1,5 +1,6 @@
 // controller לניהול ארגונים במערכת Hands On
 const Organization = require('../models/Organization');
+const bcrypt = require('bcrypt');
 
 // פונקציה לבדיקה שה-API עובד
 const testOrganization = (req, res) => {
@@ -14,12 +15,12 @@ const registerOrganization = async (req, res) => {
         // בדיקה אם כבר קיים ארגון עם אותו מייל
         const existingOrganization = await Organization.findOne({ email });
         if (existingOrganization) {
-            return res.status(400).json({ message: 'ארגון עם מייל זה כבר קיים' });
+            return res.status(400).json({ message: 'An organization with this email already exists' });
         }
 
         // יצירת ארגון חדש
         const newOrganization = new Organization({
-            name,
+            organizationName: name,
             email,
             password,
             phoneNumber,
@@ -30,11 +31,42 @@ const registerOrganization = async (req, res) => {
 
         await newOrganization.save(); // שמירה במסד הנתונים
         res.status(201).json({
-            message: 'ארגון נרשם בהצלחה',
+            message: 'Organization registered successfully',
             organization: newOrganization
         });
     } catch (err) {
-        res.status(500).json({ message: 'שגיאה ביצירת הארגון', error: err.message });
+        res.status(500).json({ message: 'Error registering organization', error: err.message });
+    }
+};
+
+// פונקציה להתחברות ארגון קיים
+const loginOrganization = async (req, res) => {
+    try {
+        const { email, password } = req.body;
+
+        // חיפוש ארגון לפי אימייל
+        const organization = await Organization.findOne({ email });
+        if (!organization) {
+            return res.status(404).json({ message: 'Organization not found' });
+        }
+
+        // השוואת סיסמה עם bcrypt
+        const isMatch = await bcrypt.compare(password, organization.password);
+        if (!isMatch) {
+            return res.status(401).json({ message: 'Incorrect password' });
+        }
+
+        // התחברות הצליחה
+        res.status(200).json({
+            message: 'Login successful',
+            organization: {
+                id: organization._id,
+                organizationName: organization.organizationName,
+                email: organization.email
+            }
+        });
+    } catch (err) {
+        res.status(500).json({ message: 'Login error', error: err.message });
     }
 };
 
@@ -44,7 +76,7 @@ const getAllOrganizations = async (req, res) => {
         const organizations = await Organization.find();
         res.status(200).json(organizations);
     } catch (err) {
-        res.status(500).json({ message: 'שגיאה בקבלת הארגונים', error: err.message });
+        res.status(500).json({ message: 'Error retrieving organizations', error: err.message });
     }
 };
 
@@ -57,15 +89,15 @@ const updateOrganization = async (req, res) => {
         const updatedOrg = await Organization.findByIdAndUpdate(id, updatedData, { new: true });
 
         if (!updatedOrg) {
-            return res.status(404).json({ message: 'ארגון לא נמצא' });
+            return res.status(404).json({ message: 'Organization not found' });
         }
 
         res.status(200).json({
-            message: 'הארגון עודכן בהצלחה',
+            message: 'Organization updated successfully',
             organization: updatedOrg
         });
     } catch (err) {
-        res.status(500).json({ message: 'שגיאה בעדכון הארגון', error: err.message });
+        res.status(500).json({ message: 'Error updating organization', error: err.message });
     }
 };
 
@@ -77,21 +109,20 @@ const deleteOrganization = async (req, res) => {
         const deletedOrg = await Organization.findByIdAndDelete(id);
 
         if (!deletedOrg) {
-            return res.status(404).json({ message: 'ארגון לא נמצא' });
+            return res.status(404).json({ message: 'Organization not found' });
         }
 
-        res.status(200).json({
-            message: 'הארגון נמחק בהצלחה'
-        });
+        res.status(200).json({ message: 'Organization deleted successfully' });
     } catch (err) {
-        res.status(500).json({ message: 'שגיאה במחיקת הארגון', error: err.message });
+        res.status(500).json({ message: 'Error deleting organization', error: err.message });
     }
 };
 
 // ייצוא הפונקציות
-module.exports = { 
+module.exports = {
     testOrganization,
     registerOrganization,
+    loginOrganization,
     getAllOrganizations,
     updateOrganization,
     deleteOrganization
