@@ -141,6 +141,37 @@ const loginVolunteer = async (req, res) => {
     }
 };
 
+// פונקציה למחיקת כפילויות לפי אימייל
+const deleteDuplicateVolunteers = async (req, res) => {
+    try {
+        const allVolunteers = await Volunteer.find();
+        const seenEmails = new Set();
+        const duplicates = [];
+
+        for (let volunteer of allVolunteers) {
+            const email = volunteer.email?.toLowerCase().trim();
+            if (!email) continue;
+
+            if (seenEmails.has(email)) {
+                duplicates.push(volunteer._id);
+            } else {
+                seenEmails.add(email);
+            }
+        }
+
+        await Volunteer.deleteMany({ _id: { $in: duplicates } });
+
+        res.status(200).json({
+            message: `Deleted ${duplicates.length} duplicate volunteers.`,
+            deletedIds: duplicates
+        });
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ message: 'Error deleting duplicates', error: err.message });
+    }
+};
+
+
 // ייצוא כל הפונקציות
 module.exports = {
     testVolunteer,
@@ -149,5 +180,6 @@ module.exports = {
     updateVolunteer,
     deleteVolunteer,
     getVolunteerById,
-    loginVolunteer
+    loginVolunteer,
+    deleteDuplicateVolunteers
 };
