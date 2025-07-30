@@ -7,6 +7,8 @@ const testEvent = (req, res) => {
 
 // יצירת אירוע חדש
 const createEvent = async (req, res) => {
+    console.log("📦 req.body:", req.body);
+    
     try {
         const {
             title,
