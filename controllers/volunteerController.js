@@ -1,5 +1,6 @@
 // controller לניהול מתנדבים במערכת Hands On
 const Volunteer = require('../models/Volunteer');
+const bcrypt = require('bcrypt');
 
 // פונקציית בדיקה שה-API עובד
 const testVolunteer = (req, res) => {
@@ -9,18 +10,28 @@ const testVolunteer = (req, res) => {
 // פונקציה לרישום מתנדב חדש
 const registerVolunteer = async (req, res) => {
     try {
-        const { fullName, email, password, phoneNumber, birthdate, aboutMe, profileImage } = req.body;
+        const {
+            fullName,
+            email,
+            password,
+            phoneNumber,
+            birthdate,
+            aboutMe,
+            profileImage
+        } = req.body;
 
-        // בדיקה אם כבר קיים מתנדב עם המייל הזה
-        const existingVolunteer = await Volunteer.findOne({ email });
+        const normalizedEmail = email.toLowerCase().trim();
+
+        // בדיקה אם כבר קיים מתנדב עם אותו אימייל
+        const existingVolunteer = await Volunteer.findOne({ email: normalizedEmail });
         if (existingVolunteer) {
-            return res.status(400).json({ message: 'מתנדב עם מייל זה כבר קיים' });
+            return res.status(400).json({ message: 'Volunteer with this email already exists' });
         }
 
         // יצירת מתנדב חדש
         const newVolunteer = new Volunteer({
             fullName,
-            email,
+            email: normalizedEmail,
             password,
             phoneNumber,
             birthdate,
@@ -30,10 +41,10 @@ const registerVolunteer = async (req, res) => {
 
         await newVolunteer.save();
 
-        res.status(201).json({ message: 'המתנדב נרשם בהצלחה', volunteer: newVolunteer });
+        res.status(201).json({ message: 'Volunteer registered successfully', volunteer: newVolunteer });
     } catch (err) {
         console.error(err);
-        res.status(500).json({ message: 'שגיאת שרת', error: err.message });
+        res.status(500).json({ message: 'Server error', error: err.message });
     }
 };
 
@@ -44,7 +55,7 @@ const getAllVolunteers = async (req, res) => {
         res.status(200).json(volunteers);
     } catch (err) {
         console.error(err);
-        res.status(500).json({ message: 'שגיאה בקבלת המתנדבים', error: err.message });
+        res.status(500).json({ message: 'Error getting volunteers', error: err.message });
     }
 };
 
@@ -57,16 +68,16 @@ const updateVolunteer = async (req, res) => {
         const updatedVolunteer = await Volunteer.findByIdAndUpdate(id, updatedData, { new: true });
 
         if (!updatedVolunteer) {
-            return res.status(404).json({ message: 'מתנדב לא נמצא' });
+            return res.status(404).json({ message: 'Volunteer not found' });
         }
 
         res.status(200).json({
-            message: 'המתנדב עודכן בהצלחה',
+            message: 'Volunteer updated successfully',
             volunteer: updatedVolunteer
         });
     } catch (err) {
         console.error(err);
-        res.status(500).json({ message: 'שגיאה בעדכון המתנדב', error: err.message });
+        res.status(500).json({ message: 'Error updating volunteer', error: err.message });
     }
 };
 
@@ -78,16 +89,17 @@ const deleteVolunteer = async (req, res) => {
         const deletedVolunteer = await Volunteer.findByIdAndDelete(id);
 
         if (!deletedVolunteer) {
-            return res.status(404).json({ message: 'מתנדב לא נמצא' });
+            return res.status(404).json({ message: 'Volunteer not found' });
         }
 
-        res.status(200).json({ message: 'המתנדב נמחק בהצלחה' });
+        res.status(200).json({ message: 'Volunteer deleted successfully' });
     } catch (err) {
         console.error(err);
-        res.status(500).json({ message: 'שגיאה במחיקת המתנדב', error: err.message });
+        res.status(500).json({ message: 'Error deleting volunteer', error: err.message });
     }
 };
 
+// שליפת מתנדב לפי ID
 const getVolunteerById = async (req, res) => {
     try {
         const { id } = req.params;
@@ -103,12 +115,22 @@ const getVolunteerById = async (req, res) => {
         res.status(500).json({ message: 'Error fetching volunteer', error: err.message });
     }
 };
+
+// התחברות מתנדב
 const loginVolunteer = async (req, res) => {
     try {
         const { email, password } = req.body;
+        const normalizedEmail = email.toLowerCase().trim();
 
-        const volunteer = await Volunteer.findOne({ email });
-        if (!volunteer || volunteer.password !== password) {
+        // חיפוש לפי אימייל
+        const volunteer = await Volunteer.findOne({ email: normalizedEmail });
+        if (!volunteer) {
+            return res.status(401).json({ message: 'Invalid email or password' });
+        }
+
+        // בדיקת התאמה של סיסמה מוצפנת
+        const isMatch = await bcrypt.compare(password, volunteer.password);
+        if (!isMatch) {
             return res.status(401).json({ message: 'Invalid email or password' });
         }
 
@@ -119,7 +141,7 @@ const loginVolunteer = async (req, res) => {
     }
 };
 
-// ייצוא הפונקציות
+// ייצוא כל הפונקציות
 module.exports = {
     testVolunteer,
     registerVolunteer,
