@@ -24,7 +24,6 @@ const createEvent = async (req, res) => {
             createdByModel
         } = req.body;
 
-        // יצירת מופע חדש של אירוע לפי המודל
         const newEvent = new Event({
             title,
             description,
@@ -39,8 +38,7 @@ const createEvent = async (req, res) => {
             createdByModel
         });
 
-        await newEvent.save(); // שמירה במסד הנתונים
-
+        await newEvent.save();
         res.status(201).json({ message: 'Event created successfully', event: newEvent });
     } catch (err) {
         console.error(err);
@@ -48,7 +46,7 @@ const createEvent = async (req, res) => {
     }
 };
 
-// שליפה של כל האירועים
+// שליפת כל האירועים
 const getAllEvents = async (req, res) => {
     try {
         const events = await Event.find()
@@ -61,7 +59,7 @@ const getAllEvents = async (req, res) => {
     }
 };
 
-// שליפה של אירוע לפי מזהה
+// שליפת אירוע לפי מזהה
 const getEventById = async (req, res) => {
     try {
         const { eventId } = req.params;
@@ -97,7 +95,7 @@ const updateEvent = async (req, res) => {
     }
 };
 
-// מחיקת אירוע לפי מזהה
+// מחיקת אירוע
 const deleteEvent = async (req, res) => {
     try {
         const { eventId } = req.params;
@@ -112,7 +110,7 @@ const deleteEvent = async (req, res) => {
     }
 };
 
-// הצטרפות של מתנדב לאירוע
+// הצטרפות לאירוע
 const joinEvent = async (req, res) => {
     try {
         const { eventId } = req.params;
@@ -128,7 +126,7 @@ const joinEvent = async (req, res) => {
         }
 
         event.participants.push(userId);
-        event.participantsCount = event.participants.length; // עדכון כמות משתתפים
+        event.participantsCount = event.participants.length;
 
         await event.save();
 
@@ -139,7 +137,7 @@ const joinEvent = async (req, res) => {
     }
 };
 
-// הסרת מתנדב מאירוע
+// יציאה מאירוע
 const leaveEvent = async (req, res) => {
     try {
         const { eventId } = req.params;
@@ -155,7 +153,7 @@ const leaveEvent = async (req, res) => {
         }
 
         event.participants.pull(userId);
-        event.participantsCount = event.participants.length; // עדכון כמות משתתפים
+        event.participantsCount = event.participants.length;
 
         await event.save();
 
@@ -166,7 +164,7 @@ const leaveEvent = async (req, res) => {
     }
 };
 
-// שליפת משתתפים של אירוע מסוים
+// שליפת משתתפים לפי מזהה אירוע
 const getParticipants = async (req, res) => {
     try {
         const { eventId } = req.params;
@@ -181,8 +179,8 @@ const getParticipants = async (req, res) => {
     }
 };
 
-// שליפת כל האירועים שמשתמש מסוים רשום אליהם
-exports.getEventsByParticipant = async (req, res) => {
+// שליפת אירועים לפי מזהה משתתף
+const getEventsByParticipant = async (req, res) => {
     try {
         const { userId } = req.params;
 
@@ -198,6 +196,23 @@ exports.getEventsByParticipant = async (req, res) => {
     }
 };
 
+// פונקציה נוספת עם שם אחר אם נרצה רנדור או נתיב שונה
+const getRegisteredEvents = async (req, res) => {
+    try {
+        const { userId } = req.params;
+
+        const events = await Event.find({ participants: userId })
+            .populate('participants', 'fullName email');
+
+        res.status(200).json(events);
+    } catch (error) {
+        res.status(500).json({
+            message: 'Error retrieving registered events',
+            error: error.message
+        });
+    }
+};
+
 module.exports = {
     testEvent,
     createEvent,
@@ -208,5 +223,6 @@ module.exports = {
     joinEvent,
     leaveEvent,
     getParticipants,
+    getEventsByParticipant,
     getRegisteredEvents
 };
