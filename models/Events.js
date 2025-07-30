@@ -1,4 +1,3 @@
-// מודל של אירוע במערכת Hands On
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
