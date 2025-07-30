@@ -180,18 +180,19 @@ const getParticipants = async (req, res) => {
 };
 
 // שליפת כל האירועים שמשתמש מסוים רשום אליהם
-const getRegisteredEvents = async (req, res) => {
+exports.getEventsByParticipant = async (req, res) => {
     try {
         const { userId } = req.params;
 
         const events = await Event.find({ participants: userId })
-            .populate('createdBy', 'fullName')
-            .populate('participants', 'fullName');
+            .populate('participants', 'fullName email');
 
         res.status(200).json(events);
-    } catch (err) {
-        console.error(err);
-        res.status(500).json({ message: 'Error fetching registered events', error: err.message });
+    } catch (error) {
+        res.status(500).json({
+            message: 'Error retrieving events for the participant',
+            error: error.message
+        });
     }
 };
 

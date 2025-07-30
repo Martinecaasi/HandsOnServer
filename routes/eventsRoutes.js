@@ -15,6 +15,12 @@ router.post('/', eventController.createEvent);
 // קבלת כל האירועים
 router.get('/', eventController.getAllEvents);
 
+// קבלת כל האירועים שהמשתמש נרשם אליהם
+router.get('/registered/:userId', eventController.getRegisteredEvents);
+
+// שליפת אירועים לפי מזהה משתתף (חייב לבוא לפני :eventId!)
+router.get('/my-events/:userId', eventController.getEventsByParticipant);
+
 // הצטרפות לאירוע
 router.post('/:eventId/join', eventController.joinEvent);
 
@@ -24,16 +30,13 @@ router.post('/:eventId/leave', eventController.leaveEvent);
 // קבלת משתתפים של אירוע
 router.get('/:eventId/participants', eventController.getParticipants);
 
-// קבלת אירוע לפי ID
-router.get('/:eventId', eventController.getEventById);
-
 // עדכון אירוע
 router.put('/:eventId', eventController.updateEvent);
 
 // מחיקת אירוע
 router.delete('/:eventId', eventController.deleteEvent);
 
-// קבלת כל האירועים שהמשתמש נרשם אליהם
-router.get('/registered/:userId', eventController.getRegisteredEvents);
+// קבלת אירוע לפי ID
+router.get('/:eventId', eventController.getEventById);
 
 module.exports = router;
