@@ -9,36 +9,54 @@ const testOrganization = (req, res) => {
 
 // פונקציה לרישום ארגון חדש
 const registerOrganization = async (req, res) => {
+    console.log("body:", req.body);
+    console.log("file:", req.file);
     try {
-        const { name, email, password, phoneNumber, speciality, about, handsNeeded } = req.body;
+        const {
+            orgName,
+            phoneNumber,
+            email,
+            streetName,
+            streetNumber,
+            apartmentNumber,
+            apartmentFloor,
+            city,
+            about
+        } = req.body;
 
-        // בדיקה אם כבר קיים ארגון עם אותו מייל
         const existingOrganization = await Organization.findOne({ email });
         if (existingOrganization) {
             return res.status(400).json({ message: 'An organization with this email already exists' });
         }
 
-        // יצירת ארגון חדש
         const newOrganization = new Organization({
-            organizationName: name,
-            email,
-            password,
+            organizationName: orgName,
             phoneNumber,
-            speciality,
+            email,
+            address: {
+                street_Name: streetName,
+                street_Num: streetNumber,
+                appartment_Num: apartmentNumber,
+                appartment_Floor: apartmentFloor,
+                city
+            },
             about,
-            handsNeeded,
-            role:'organization'
+            profileImage: req.file?.filename || null
         });
 
-        await newOrganization.save(); // שמירה במסד הנתונים
+        await newOrganization.save();
+
         res.status(201).json({
             message: 'Organization registered successfully',
             organization: newOrganization
         });
+
     } catch (err) {
+        console.error(err);
         res.status(500).json({ message: 'Error registering organization', error: err.message });
     }
 };
+
 
 // פונקציה להתחברות ארגון קיים
 const loginOrganization = async (req, res) => {

@@ -1,13 +1,13 @@
 const express = require('express');
 const router = express.Router();
 const organizationController = require('../controllers/organizationController');
+const upload = require('../middlewares/uploadMiddlewares');
 
 // בדיקה
 router.get('/test', organizationController.testOrganization);
 
-// רישום ארגון חדש
-router.post('/register', organizationController.registerOrganization);
-
+// רישום ארגון חדש עם תמונה
+router.post('/register', upload.single('orgImage'), organizationController.registerOrganization);
 // התחברות ארגון
 router.post('/login', organizationController.loginOrganization);
 

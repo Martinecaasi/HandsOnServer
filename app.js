@@ -1,4 +1,5 @@
 const express = require('express');
+const cors = require('cors');
 const app = express();
 
 app.use(cors({
@@ -7,9 +8,14 @@ app.use(cors({
   allowedHeaders: ['Content-Type']
 }));
 
+
+
+
 // Middleware
 app.use(express.json());
 
+// הגדרה לקבצים סטטיים - גישה לתמונות שהועלו
+app.use('/uploads', express.static('public/uploads'));
 
 // Routes
 const volunteerRoutes = require('./routes/volunteerRoutes');
