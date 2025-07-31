@@ -121,6 +121,7 @@ const getVolunteerById = async (req, res) => {
 };
 
 // התחברות מתנדב
+// התחברות מתנדב
 const loginVolunteer = async (req, res) => {
   try {
     console.log('🔐 Login request received');
@@ -147,17 +148,24 @@ const loginVolunteer = async (req, res) => {
     }
 
     console.log('✅ Volunteer login successful');
-    res.status(200).json({ message: 'Login successful' });
+    
+    // ✅ החזרת role בצד לקוח
+    res.status(200).json({
+      message: 'Login successful',
+      role: 'volunteer',
+      volunteer: {
+        id: volunteer._id,
+        fullName: volunteer.fullName,
+        email: volunteer.email
+      }
+    });
 
   } catch (err) {
     console.error('❗ Login error:', err);
     res.status(500).json({ message: 'Login error', error: err.message });
   }
-
-    console.log('Response status:', response.status);
-    const text = await response.text(); // שים לב - לא json
-    console.log('Raw response:', text);
 };
+
 
 // פונקציה למחיקת כפילויות לפי אימייל
 const deleteDuplicateVolunteers = async (req, res) => {
