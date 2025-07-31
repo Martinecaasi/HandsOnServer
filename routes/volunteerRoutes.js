@@ -32,8 +32,6 @@ router.delete('/:id', volunteerController.deleteVolunteer);
 // שליפת מתנדב לפי מזהה – בסוף!
 router.get('/:id', volunteerController.getVolunteerById);
 
-// שימוש ב־upload.single כדי לטפל בקובץ בשם profileImage
-router.post('/', upload.single('profileImage'), volunteerController.registerVolunteer);
 
 
 module.exports = router;
