@@ -4,7 +4,7 @@ const path = require('path');
 const app = express();
 
 app.use(cors({
-  origin: 'http://127.0.0.1:5500',
+  origin: 'https://handsonserver-new.onrender.com',
   methods: ['GET', 'POST', 'PUT', 'DELETE'],
   credentials: true
 }));
@@ -21,5 +21,6 @@ app.use('/api/volunteers', volunteerRoutes);
 app.use('/api/organizations', organizationRoutes);
 app.use('/api/admins', adminRoutes);
 app.use('/api/events', eventRoutes);
+app.use('/uploads', express.static(path.join(__dirname, 'public/uploads')));
 
 module.exports = app;
