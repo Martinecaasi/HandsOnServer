@@ -1,5 +1,8 @@
 const express = require('express');
 const app = express();
+const cors = require('cors');
+
+app.use(cors());
 
 // Middleware
 app.use(express.json());
@@ -15,5 +18,6 @@ app.use('/api/volunteers', volunteerRoutes);
 app.use('/api/organizations', organizationRoutes);
 app.use('/api/admins', adminRoutes);
 app.use('/api/events', eventRoutes);
+app.use('/uploads', express.static('public/uploads'));
 
 module.exports = app;

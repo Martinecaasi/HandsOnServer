@@ -9,45 +9,45 @@ const testVolunteer = (req, res) => {
 
 // פונקציה לרישום מתנדב חדש
 const registerVolunteer = async (req, res) => {
-    try {
-        const {
-            fullName,
-            email,
-            password,
-            phoneNumber,
-            birthdate,
-            aboutMe,
-            profileImage,
-        } = req.body;
+  try {
+    const {
+      fullName,
+      email,
+      password,
+      phoneNumber,
+      birthdate,
+      aboutMe
+    } = req.body;
 
-        const normalizedEmail = email.toLowerCase().trim();
+    const normalizedEmail = email.toLowerCase().trim();
 
-        // בדיקה אם כבר קיים מתנדב עם אותו אימייל
-        const existingVolunteer = await Volunteer.findOne({ email: normalizedEmail });
-        if (existingVolunteer) {
-            return res.status(400).json({ message: 'Volunteer with this email already exists' });
-        }
-
-        // יצירת מתנדב חדש
-        const newVolunteer = new Volunteer({
-            fullName,
-            email: normalizedEmail,
-            password,
-            phoneNumber,
-            birthdate,
-            aboutMe,
-            profileImage,
-            role:'volunteer'
-        });
-
-        await newVolunteer.save();
-
-        res.status(201).json({ message: 'Volunteer registered successfully', volunteer: newVolunteer });
-    } catch (err) {
-        console.error(err);
-        res.status(500).json({ message: 'Server error', error: err.message });
+    const existingVolunteer = await Volunteer.findOne({ email: normalizedEmail });
+    if (existingVolunteer) {
+      return res.status(400).json({ message: 'Volunteer with this email already exists' });
     }
+
+    const profileImage = req.file ? `/uploads/${req.file.filename}` : '';
+
+    const newVolunteer = new Volunteer({
+      fullName,
+      email: normalizedEmail,
+      password,
+      phoneNumber,
+      birthdate,
+      aboutMe,
+      profileImage,
+      role: 'volunteer'
+    });
+
+    await newVolunteer.save();
+
+    res.status(201).json({ message: 'Volunteer registered successfully', volunteer: newVolunteer });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: 'Server error', error: err.message });
+  }
 };
+
 
 // פונקציה לקבלת כל המתנדבים
 const getAllVolunteers = async (req, res) => {
