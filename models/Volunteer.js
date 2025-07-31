@@ -9,7 +9,8 @@ const volunteerSchema = new mongoose.Schema({
   birthdate: { type: Date, required: true },
   aboutMe: { type: String },
   profileImage: { type: String },
-  userPrivate: { type: Boolean, default: false }
+  userPrivate: { type: Boolean, default: false },
+  role:{type:String, default:'volunteer'}
 }, { timestamps: true });
 
 volunteerSchema.pre('save', async function (next) {

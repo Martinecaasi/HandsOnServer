@@ -26,7 +26,8 @@ const registerOrganization = async (req, res) => {
             phoneNumber,
             speciality,
             about,
-            handsNeeded
+            handsNeeded,
+            role:'organization'
         });
 
         await newOrganization.save(); // שמירה במסד הנתונים

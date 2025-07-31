@@ -11,7 +11,9 @@ const organizationSchema = new mongoose.Schema({
   profileImage: { type: String },
   isPrivate: { type: Boolean, default: false },
   about: { type: String },
-  handsNeeded: { type: Number }
+  handsNeeded: { type: Number },
+  role:{type:String,default:'organization'}
+
 }, { timestamps: true });
 
 // הצפנת סיסמה לפני שמירה

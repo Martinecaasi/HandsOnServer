@@ -4,7 +4,7 @@ const bcrypt = require('bcrypt');
 
 // פונקציית בדיקה שה-API עובד
 const testVolunteer = (req, res) => {
-    res.send('👋 Hello from Volunteers API!');
+    res.send('Hello from Volunteers API!');
 };
 
 // פונקציה לרישום מתנדב חדש
@@ -17,7 +17,7 @@ const registerVolunteer = async (req, res) => {
             phoneNumber,
             birthdate,
             aboutMe,
-            profileImage
+            profileImage,
         } = req.body;
 
         const normalizedEmail = email.toLowerCase().trim();
@@ -36,7 +36,8 @@ const registerVolunteer = async (req, res) => {
             phoneNumber,
             birthdate,
             aboutMe,
-            profileImage
+            profileImage,
+            role:'volunteer'
         });
 
         await newVolunteer.save();
