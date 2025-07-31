@@ -3,8 +3,15 @@ const cors = require('cors');
 const path = require('path');
 const app = express();
 
-app.use(cors()); 
-
+app.use(cors({
+  origin: [
+    'http://localhost:5500',
+    'http://127.0.0.1:5500',
+    'https://handsonserver-new.onrender.com' 
+  ],
+  methods: ['GET', 'POST', 'PUT', 'DELETE'],
+  credentials: true
+}));
 
 // ✅ הכרחי בשביל POST עם JSON
 app.use(express.json());
