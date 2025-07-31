@@ -16,6 +16,7 @@ const registerOrganization = async (req, res) => {
             orgName,
             phoneNumber,
             email,
+            password,
             streetName,
             streetNumber,
             apartmentNumber,
@@ -29,10 +30,14 @@ const registerOrganization = async (req, res) => {
             return res.status(400).json({ message: 'An organization with this email already exists' });
         }
 
+        const saltRounds = 10;
+        const hashedPassword = await bcrypt.hash(password, saltRounds);
+
         const newOrganization = new Organization({
             organizationName: orgName,
             phoneNumber,
             email,
+            password: hashedPassword,
             address: {
                 street_Name: streetName,
                 street_Num: streetNumber,
