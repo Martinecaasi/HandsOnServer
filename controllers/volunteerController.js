@@ -156,7 +156,7 @@ const loginVolunteer = async (req, res) => {
 
     console.log('Response status:', response.status);
     const text = await response.text(); // שים לב - לא json
-c   onsole.log('Raw response:', text);
+    console.log('Raw response:', text);
 };
 
 // פונקציה למחיקת כפילויות לפי אימייל
