@@ -5,6 +5,7 @@ const eventController = require('../controllers/eventsController');
 const upload = require('../Middlewares/uploadMiddleware');
 
 
+
 router.post('/register', upload.single('profileImage'), volunteerController.registerVolunteer);
 // בדיקה
 router.get('/test', volunteerController.testVolunteer);

@@ -26,12 +26,15 @@ const registerVolunteer = async (req, res) => {
       return res.status(400).json({ message: 'Volunteer with this email already exists' });
     }
 
+    const saltRounds = 10;
+    const hashedPassword = await bcrypt.hash(password, saltRounds);
+
     const profileImage = req.file ? `/uploads/${req.file.filename}` : '';
 
     const newVolunteer = new Volunteer({
       fullName,
       email: normalizedEmail,
-      password,
+      password: hashedPassword,
       phoneNumber,
       birthdate,
       aboutMe,
@@ -121,7 +124,10 @@ const getVolunteerById = async (req, res) => {
 const loginVolunteer = async (req, res) => {
     try {
         const { email, password } = req.body;
+        console.log('Login attempt:',email);
+
         const normalizedEmail = email.toLowerCase().trim();
+        
 
         // חיפוש לפי אימייל
         const volunteer = await Volunteer.findOne({ email: normalizedEmail });
@@ -129,13 +135,16 @@ const loginVolunteer = async (req, res) => {
             return res.status(401).json({ message: 'Invalid email or password' });
         }
 
+        console.log("volunteer Found:", volunteer.email);
+
         // בדיקת התאמה של סיסמה מוצפנת
         const isMatch = await bcrypt.compare(password, volunteer.password);
         if (!isMatch) {
+            console.log('passwords dont match')
             return res.status(401).json({ message: 'Invalid email or password' });
         }
 
-        res.status(200).json({ message: 'Login successful', volunteer });
+        res.status(200).json({ message: 'Login successful'});
     } catch (err) {
         console.error(err);
         res.status(500).json({ message: 'Login error', error: err.message });
