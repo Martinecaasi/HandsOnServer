@@ -3,17 +3,11 @@ const cors = require('cors');
 const path = require('path');
 const app = express();
 
-const allowedOrigins = ['https://handsonn.netlify.app', 'http://localhost:3000'];
-
 app.use(cors({
-  origin: function (origin, callback) {
-    if (!origin || allowedOrigins.includes(origin)) {
-      callback(null, true); // מותר
-    } else {
-      callback(new Error('Not allowed by CORS'));
-    }
-  },
-  credentials: true
+  origin: 'https://handsonn.netlify.app',
+  methods: ['GET', 'POST', 'PUT', 'DELETE'],
+  credentials: true,
+  allowedHeaders: ['Content-Type', 'Authorization']
 }));
 
 // ✅ הכרחי בשביל POST עם JSON
