@@ -9,59 +9,45 @@ const testOrganization = (req, res) => {
 
 // פונקציה לרישום ארגון חדש
 const registerOrganization = async (req, res) => {
-    console.log("body:", req.body);
-    console.log("file:", req.file);
-    try {
-        const {
-            orgName,
-            phoneNumber,
-            email,
-            password,
-            streetName,
-            streetNumber,
-            apartmentNumber,
-            apartmentFloor,
-            city,
-            about
-        } = req.body;
+  try {
+    const {
+      name,
+      email,
+      password,
+      phoneNumber,
+      streetName,
+      streetNumber,
+      apartmentNumber,
+      apartmentFloor,
+      city,
+      about
+    } = req.body;
 
-        const existingOrganization = await Organization.findOne({ email });
-        if (existingOrganization) {
-            return res.status(400).json({ message: 'An organization with this email already exists' });
-        }
+    const profileImage = req.file ? req.file.filename : null;
 
-        const saltRounds = 10;
-        const hashedPassword = await bcrypt.hash(password, saltRounds);
+    const newOrg = new Organization({
+      name,
+      email,
+      password,
+      phoneNumber,
+      address: {
+        streetName,
+        streetNumber,
+        apartmentNumber,
+        apartmentFloor,
+        city
+      },
+      about,
+      profileImage
+    });
 
-        const newOrganization = new Organization({
-            organizationName: orgName,
-            phoneNumber,
-            email,
-            password: hashedPassword,
-            address: {
-                street_Name: streetName,
-                street_Num: streetNumber,
-                appartment_Num: apartmentNumber,
-                appartment_Floor: apartmentFloor,
-                city
-            },
-            about,
-            profileImage: req.file?.filename || null
-        });
-
-        await newOrganization.save();
-
-        res.status(201).json({
-            message: 'Organization registered successfully',
-            organization: newOrganization
-        });
-
-    } catch (err) {
-        console.error(err);
-        res.status(500).json({ message: 'Error registering organization', error: err.message });
-    }
+    await newOrg.save();
+    res.status(201).json({ message: 'ארגון נרשם בהצלחה', organization: newOrg });
+  } catch (error) {
+    console.error('שגיאה ברישום ארגון:', error);
+    res.status(500).json({ message: 'Error registering organization', error: error.message });
+  }
 };
-
 
 // פונקציה להתחברות ארגון קיים
 const loginOrganization = async (req, res) => {
