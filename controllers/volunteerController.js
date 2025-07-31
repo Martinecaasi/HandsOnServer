@@ -16,7 +16,7 @@ const registerVolunteer = async (req, res) => {
       password,
       phoneNumber,
       birthdate,
-      aboutMe
+      aboutMe,
     } = req.body;
 
     const normalizedEmail = email.toLowerCase().trim();
@@ -120,7 +120,7 @@ const getVolunteerById = async (req, res) => {
     }
 };
 
-// התחברות מתנדב
+
 // התחברות מתנדב
 const loginVolunteer = async (req, res) => {
   try {
