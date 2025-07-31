@@ -7,7 +7,9 @@ const upload = require('../Middlewares/uploadMiddleware');
 router.get('/test', organizationController.testOrganization);
 
 // רישום ארגון חדש עם תמונה
-router.post('/', upload.single('profileImage'), organizationController.registerOrganization);
+router.post('/', upload.single('orgImage'), organizationController.registerOrganization);
+
+router.post('/register', organizationController.registerOrganization)
 // התחברות ארגון
 router.post('/login', organizationController.loginOrganization);
 
