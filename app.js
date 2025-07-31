@@ -22,7 +22,6 @@ const volunteerRoutes = require('./routes/volunteerRoutes');
 const organizationRoutes = require('./routes/organizationRoutes');
 const adminRoutes = require('./routes/adminRoutes');
 const eventRoutes = require('./routes/eventsRoutes');
-const citiesRoutes = require('./routes/citiesRoutes');
 
 
 
@@ -31,6 +30,6 @@ app.use('/api/volunteers', volunteerRoutes);
 app.use('/api/organizations', organizationRoutes);
 app.use('/api/admins', adminRoutes);
 app.use('/api/events', eventRoutes);
-app.use('/api/cities', citiesRoutes);
+
 
 module.exports = app;
