@@ -11,7 +11,7 @@ const testOrganization = (req, res) => {
 const registerOrganization = async (req, res) => {
   try {
     const {
-      name,
+      organizationName:name,
       email,
       password,
       phoneNumber,

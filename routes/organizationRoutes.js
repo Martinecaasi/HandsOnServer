@@ -6,10 +6,9 @@ const upload = require('../Middlewares/uploadMiddleware');
 // בדיקה
 router.get('/test', organizationController.testOrganization);
 
-// רישום ארגון חדש עם תמונה
-router.post('/', upload.single('profileImage'), organizationController.registerOrganization);
+// ✅ רישום ארגון עם תמונה, בנתיב הנכון
+router.post('/register', upload.single('profileImage'), organizationController.registerOrganization);
 
-router.post('/register', organizationController.registerOrganization)
 // התחברות ארגון
 router.post('/login', organizationController.loginOrganization);
 
