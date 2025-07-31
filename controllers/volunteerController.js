@@ -26,12 +26,15 @@ const registerVolunteer = async (req, res) => {
       return res.status(400).json({ message: 'Volunteer with this email already exists' });
     }
 
+    const saltRounds = 10;
+    const hashedPassword = await bcrypt.hash(password, saltRounds);
+
     const profileImage = req.file ? `/uploads/${req.file.filename}` : '';
 
     const newVolunteer = new Volunteer({
       fullName,
       email: normalizedEmail,
-      password,
+      password: hashedPassword,
       phoneNumber,
       birthdate,
       aboutMe,
@@ -119,27 +122,41 @@ const getVolunteerById = async (req, res) => {
 
 // התחברות מתנדב
 const loginVolunteer = async (req, res) => {
-    try {
-        const { email, password } = req.body;
-        const normalizedEmail = email.toLowerCase().trim();
+  try {
+    console.log('🔐 Login request received');
 
-        // חיפוש לפי אימייל
-        const volunteer = await Volunteer.findOne({ email: normalizedEmail });
-        if (!volunteer) {
-            return res.status(401).json({ message: 'Invalid email or password' });
-        }
+    const { email, password } = req.body;
+    console.log('📩 Email received:', email);
 
-        // בדיקת התאמה של סיסמה מוצפנת
-        const isMatch = await bcrypt.compare(password, volunteer.password);
-        if (!isMatch) {
-            return res.status(401).json({ message: 'Invalid email or password' });
-        }
-
-        res.status(200).json({ message: 'Login successful', volunteer });
-    } catch (err) {
-        console.error(err);
-        res.status(500).json({ message: 'Login error', error: err.message });
+    if (!email || !password) {
+      return res.status(400).json({ message: 'Email and password are required' });
     }
+
+    const normalizedEmail = email.toLowerCase().trim();
+
+    const volunteer = await Volunteer.findOne({ email: normalizedEmail });
+    if (!volunteer) {
+      console.log('❌ Volunteer not found');
+      return res.status(401).json({ message: 'Invalid email or password' });
+    }
+
+    const isMatch = await bcrypt.compare(password, volunteer.password);
+    if (!isMatch) {
+      console.log('❌ Password mismatch');
+      return res.status(401).json({ message: 'Invalid email or password' });
+    }
+
+    console.log('✅ Volunteer login successful');
+    res.status(200).json({ message: 'Login successful' });
+
+  } catch (err) {
+    console.error('❗ Login error:', err);
+    res.status(500).json({ message: 'Login error', error: err.message });
+  }
+
+    console.log('Response status:', response.status);
+    const text = await response.text(); // שים לב - לא json
+    console.log('Raw response:', text);
 };
 
 // פונקציה למחיקת כפילויות לפי אימייל

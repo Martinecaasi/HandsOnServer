@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const organizationController = require('../controllers/organizationController');
-const upload = require('../middlewares/uploadMiddlewares');
+const upload = require('../middlewares/uploadMiddleware');
 
 // בדיקה
 router.get('/test', organizationController.testOrganization);

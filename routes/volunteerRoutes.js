@@ -2,9 +2,11 @@ const express = require('express');
 const router = express.Router();
 const volunteerController = require('../controllers/volunteerController');
 const eventController = require('../controllers/eventsController');
-const upload = require('../middlewares/uploadMiddlewares');
+const upload = require('../Middlewares/uploadMiddleware');
 
 
+
+router.post('/register', upload.single('profileImage'), volunteerController.registerVolunteer);
 // בדיקה
 router.get('/test', volunteerController.testVolunteer);
 
@@ -32,8 +34,6 @@ router.delete('/:id', volunteerController.deleteVolunteer);
 // שליפת מתנדב לפי מזהה – בסוף!
 router.get('/:id', volunteerController.getVolunteerById);
 
-// שימוש ב־upload.single כדי לטפל בקובץ בשם profileImage
-router.post('/', upload.single('profileImage'), volunteerController.registerVolunteer);
 
 
 module.exports = router;
