@@ -2,8 +2,10 @@ const express = require('express');
 const router = express.Router();
 const volunteerController = require('../controllers/volunteerController');
 const eventController = require('../controllers/eventsController');
+const upload = require('../middlewares/uploadMiddleware');
 
 
+router.post('/', upload.single('profileImage'), volunteerController.registerVolunteer);
 // בדיקה
 router.get('/test', volunteerController.testVolunteer);
 
