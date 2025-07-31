@@ -17,6 +17,7 @@ const registerVolunteer = async (req, res) => {
       phoneNumber,
       birthdate,
       aboutMe,
+      
     } = req.body;
 
     const normalizedEmail = email.toLowerCase().trim();
