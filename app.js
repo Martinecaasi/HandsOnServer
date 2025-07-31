@@ -3,13 +3,14 @@ const cors = require('cors');
 const path = require('path');
 const app = express();
 
+const allowedOrigins = [
+  'http://127.0.0.1:5500',
+  'http://localhost:5500',
+  'https://handsonserver-new.onrender.com'
+];
+
 app.use(cors({
-  origin: function (origin, callback) {
-    const allowedOrigins = [
-      'http://127.0.0.1:5500',
-      'http://localhost:5500',
-      'https://handsonserver-new.onrender.com'
-    ];
+  origin: (origin, callback) => {
     if (!origin || allowedOrigins.includes(origin)) {
       callback(null, true);
     } else {
@@ -19,7 +20,6 @@ app.use(cors({
   methods: ['GET', 'POST', 'PUT', 'DELETE'],
   credentials: true
 }));
-
 
 // Routes
 const volunteerRoutes = require('./routes/volunteerRoutes');
