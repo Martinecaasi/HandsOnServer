@@ -6,7 +6,8 @@ const app = express();
 app.use(cors({
   origin: true,
   methods: ['GET', 'POST', 'PUT', 'DELETE'],
-  credentials: true
+  credentials: true,
+  allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With']
 }));
 
 // ✅ הכרחי בשביל POST עם JSON
