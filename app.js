@@ -4,7 +4,7 @@ const path = require('path');
 const app = express();
 
 app.use(cors({
-  origin: 'https://handsonn.netlify.app',
+  origin: true,
   methods: ['GET', 'POST', 'PUT', 'DELETE'],
   credentials: true,
   allowedHeaders: ['Content-Type', 'Authorization']
