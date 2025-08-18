@@ -1,42 +1,38 @@
-// routes/eventsRoutes.js
-
 const express = require('express');
 const router = express.Router();
-
-// חיבור לקונטרולר של האירועים (עם s בשם הקובץ)
 const eventController = require('../controllers/eventsController');
 
-// בדיקה שה-API של אירועים עובד
+// Test route to verify events API is working
 router.get('/test', eventController.testEvent);
 
-// יצירת אירוע חדש
+// Create a new event
 router.post('/', eventController.createEvent);
 
-// קבלת כל האירועים
+// Get all events
 router.get('/', eventController.getAllEvents);
 
-// קבלת כל האירועים שהמשתמש נרשם אליהם
+// Get all events the user is registered to
 router.get('/registered/:userId', eventController.getRegisteredEvents);
 
-// שליפת אירועים לפי מזהה משתתף (חייב לבוא לפני :eventId!)
+// Get all events created by a specific user (must be before :eventId)
 router.get('/my-events/:userId', eventController.getEventsByParticipant);
 
-// הצטרפות לאירוע
+// Join an event by event ID
 router.post('/:eventId/join', eventController.joinEvent);
 
-// יציאה מאירוע
+// Leave an event by event ID
 router.post('/:eventId/leave', eventController.leaveEvent);
 
-// קבלת משתתפים של אירוע
+// Get participants of a specific event
 router.get('/:eventId/participants', eventController.getParticipants);
 
-// עדכון אירוע
+// Update an event by ID
 router.put('/:eventId', eventController.updateEvent);
 
-// מחיקת אירוע
+// Delete an event by ID
 router.delete('/:eventId', eventController.deleteEvent);
 
-// קבלת אירוע לפי ID
+// Get a single event by ID (keep this last)
 router.get('/:eventId', eventController.getEventById);
 
 module.exports = router;

@@ -2,22 +2,22 @@ const express = require('express');
 const router = express.Router();
 const adminController = require('../controllers/adminController');
 
-// בדיקה
+// Test route
 router.get('/test', adminController.testAdmin);
 
-// רישום אדמין חדש
+// Register admin
 router.post('/register', adminController.registerAdmin);
 
-// התחברות אדמין
+// Login admin
 router.post('/login', adminController.loginAdmin);
 
-// קבלת כל האדמינים
+// Get all admins
 router.get('/', adminController.getAllAdmins);
 
-// עדכון אדמין לפי ID
+// Update admin by ID
 router.put('/:id', adminController.updateAdmin);
 
-// מחיקת אדמין לפי ID
+// Delete admin by ID
 router.delete('/:id', adminController.deleteAdmin);
 
 module.exports = router;

@@ -4,36 +4,31 @@ const volunteerController = require('../controllers/volunteerController');
 const eventController = require('../controllers/eventsController');
 const upload = require('../Middlewares/uploadMiddleware');
 
-
-
-router.post('/register', upload.single('profileImage'), volunteerController.registerVolunteer);
-// בדיקה
+// Test route
 router.get('/test', volunteerController.testVolunteer);
 
-// רישום מתנדב חדש
-router.post('/register', volunteerController.registerVolunteer);
+// Register volunteer with image
+router.post('/register', upload.single('profileImage'), volunteerController.registerVolunteer);
 
-// התחברות
+// Login
 router.post('/login', volunteerController.loginVolunteer);
 
-// כל המתנדבים
+// Get all volunteers
 router.get('/', volunteerController.getAllVolunteers);
 
-// מחיקת כפילויות – חשוב שיהיה לפני /:id
+// Remove duplicate volunteers by email
 router.delete('/deduplicate', volunteerController.deleteDuplicateVolunteers);
 
-// שליפת אירועים שהמשתמש נרשם אליהם
+// Get events registered by volunteer
 router.get('/registeredEvents', eventController.getRegisteredEvents);
 
-// עדכון לפי מזהה
-router.put('/:id', volunteerController.updateVolunteer);
+// Update volunteer
+router.put('/:id', upload.single('profileImage'), volunteerController.updateVolunteer);
 
-// מחיקה לפי מזהה
+// Delete volunteer
 router.delete('/:id', volunteerController.deleteVolunteer);
 
-// שליפת מתנדב לפי מזהה – בסוף!
+// Get volunteer by ID
 router.get('/:id', volunteerController.getVolunteerById);
-
-
 
 module.exports = router;

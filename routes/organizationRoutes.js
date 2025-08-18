@@ -3,22 +3,22 @@ const router = express.Router();
 const organizationController = require('../controllers/organizationController');
 const upload = require('../Middlewares/uploadMiddleware');
 
-// בדיקה
+// Test route
 router.get('/test', organizationController.testOrganization);
 
-// ✅ רישום ארגון עם תמונה, בנתיב הנכון
+// Register organization with image
 router.post('/register', upload.single('profileImage'), organizationController.registerOrganization);
 
-// התחברות ארגון
+// Login organization
 router.post('/login', organizationController.loginOrganization);
 
-// קבלת כל הארגונים
+// Get all organizations
 router.get('/', organizationController.getAllOrganizations);
 
-// עדכון ארגון לפי ID
-router.put('/:id', organizationController.updateOrganization);
+// Update organization with optional image
+router.put('/:id', upload.single('profileImage'), organizationController.updateOrganization);
 
-// מחיקת ארגון לפי ID
+// Delete organization
 router.delete('/:id', organizationController.deleteOrganization);
 
 module.exports = router;
