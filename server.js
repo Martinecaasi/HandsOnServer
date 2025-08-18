@@ -3,7 +3,7 @@ const app = require('./app');
 const mongoose = require('mongoose');
 require('dotenv').config();
 
-app.use('/uploads', express.static('uploads'));
+/*app.use('/uploads', express.static('uploads'));*/
 
 mongoose.connect(process.env.MONGO_URI, { useNewUrlParser: true, useUnifiedTopology: true })
     .then(() => {
