@@ -1,17 +1,17 @@
-// Controller for managing organizations in the Hands On system
+// controller לניהול ארגונים במערכת Hands On
 const Organization = require('../models/Organization');
 const bcrypt = require('bcrypt');
 
-// Test API
+// בדיקה שה-API זמין
 const testOrganization = (req, res) => {
   res.send("Hello from Organizations API!");
 };
 
-// Register a new organization
+// רישום ארגון חדש
 const registerOrganization = async (req, res) => {
   try {
     const {
-      organizationName: name,
+      organizationName,
       email,
       password,
       phoneNumber,
@@ -23,27 +23,29 @@ const registerOrganization = async (req, res) => {
       about
     } = req.body;
 
+    // שמירת שם קובץ תמונת פרופיל אם הועלתה
     const profileImage = req.file ? req.file.filename : null;
 
-    // Check if organization already exists by email
+    // בדיקה אם כבר קיים ארגון עם אותו אימייל
     const existingOrg = await Organization.findOne({ email });
     if (existingOrg) {
       return res.status(400).json({ message: 'An organization with this email already exists' });
     }
 
-    // Hash the password before saving
+    // הצפנת הסיסמה
     const hashedPassword = await bcrypt.hash(password, 10);
 
+    // יצירת מופע חדש של ארגון
     const newOrg = new Organization({
-      name,
+      organizationName,
       email,
       password: hashedPassword,
       phoneNumber,
       address: {
-        streetName,
-        streetNumber,
-        apartmentNumber,
-        apartmentFloor,
+        street_Name: streetName,
+        street_Num: streetNumber,
+        appartment_Num: apartmentNumber,
+        appartment_Floor: apartmentFloor,
         city
       },
       about,
@@ -51,37 +53,41 @@ const registerOrganization = async (req, res) => {
     });
 
     await newOrg.save();
-    res.status(201).json({ message: 'Organization registered successfully', organization: newOrg });
+
+    res.status(201).json({
+      message: 'Organization registered successfully',
+      organization: newOrg
+    });
   } catch (error) {
     console.error('Error registering organization:', error);
     res.status(500).json({ message: 'Error registering organization', error: error.message });
   }
 };
 
-// Login an existing organization
+// התחברות של ארגון קיים
 const loginOrganization = async (req, res) => {
   try {
     const { email, password } = req.body;
 
-    // Check if organization exists
+    // חיפוש הארגון לפי אימייל
     const organization = await Organization.findOne({ email });
     if (!organization) {
       return res.status(404).json({ message: 'Organization not found' });
     }
 
-    // Compare passwords using bcrypt
+    // השוואת סיסמה עם bcrypt
     const isMatch = await bcrypt.compare(password, organization.password);
     if (!isMatch) {
       return res.status(401).json({ message: 'Incorrect password' });
     }
 
-    // Successful login
+    // התחברות הצליחה
     res.status(200).json({
       message: 'Login successful',
       role: 'organization',
       organization: {
         id: organization._id,
-        name: organization.name,
+        name: organization.organizationName,
         email: organization.email
       }
     });
@@ -91,7 +97,7 @@ const loginOrganization = async (req, res) => {
   }
 };
 
-// Get all organizations
+// שליפת כל הארגונים
 const getAllOrganizations = async (req, res) => {
   try {
     const organizations = await Organization.find();
@@ -102,13 +108,13 @@ const getAllOrganizations = async (req, res) => {
   }
 };
 
-// Update organization by ID
+// עדכון פרטי ארגון לפי מזהה
 const updateOrganization = async (req, res) => {
   try {
     const { id } = req.params;
     const updatedData = req.body;
 
-    // If password is being updated, hash it
+    // אם מעדכנים סיסמה – נצפין אותה
     if (updatedData.password) {
       updatedData.password = await bcrypt.hash(updatedData.password, 10);
     }
@@ -129,7 +135,7 @@ const updateOrganization = async (req, res) => {
   }
 };
 
-// Delete organization by ID
+// מחיקת ארגון לפי מזהה
 const deleteOrganization = async (req, res) => {
   try {
     const { id } = req.params;
@@ -147,7 +153,7 @@ const deleteOrganization = async (req, res) => {
   }
 };
 
-// Export all controller functions
+// ייצוא הפונקציות
 module.exports = {
   testOrganization,
   registerOrganization,
