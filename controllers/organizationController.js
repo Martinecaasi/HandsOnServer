@@ -23,6 +23,7 @@ const registerOrganization = async (req, res) => {
       about
     } = req.body;
 
+    console.log('Registering organization:', organizationName, email, phoneNumber, streetName, streetNumber, apartmentNumber, apartmentFloor, city, about);
     // שמירת שם קובץ תמונת פרופיל אם הועלתה
     const profileImage = req.file ? req.file.filename : null;
 
@@ -68,7 +69,8 @@ const registerOrganization = async (req, res) => {
 const loginOrganization = async (req, res) => {
   try {
     const { email, password } = req.body;
-
+    console.log('Login attempt for organization:', email, password ? 'password provided' : 'no password provided');
+    
     // חיפוש הארגון לפי אימייל
     const organization = await Organization.findOne({ email });
     if (!organization) {
