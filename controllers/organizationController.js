@@ -88,7 +88,7 @@ const loginOrganization = async (req, res) => {
     res.status(200).json({
       message: 'Login successful',
       organization: {
-        id: organization._id,
+        _id: organization._id,
         name: organization.organizationName,
         email: organization.email
       }
