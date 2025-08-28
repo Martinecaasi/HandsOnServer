@@ -70,33 +70,30 @@ const loginOrganization = async (req, res) => {
   try {
     const { email, password } = req.body;
 
-    // נירמול האימייל
+    // Normalize email
     const normalizedEmail = email.toLowerCase().trim();
 
-    console.log('Login attempt for organization:', normalizedEmail, password ? 'password provided' : 'no password provided');
+    console.log('Login attempt for organization:', normalizedEmail);
 
-    // חיפוש הארגון לפי אימייל מנורמל
     const organization = await Organization.findOne({ email: normalizedEmail });
     if (!organization) {
       return res.status(404).json({ message: 'Organization not found' });
     }
 
-    // השוואת סיסמה עם bcrypt
     const isMatch = await bcrypt.compare(password, organization.password);
     if (!isMatch) {
       return res.status(401).json({ message: 'Incorrect password' });
     }
 
-    // התחברות הצליחה
     res.status(200).json({
       message: 'Login successful',
-      role: 'organization',
-      organization: {
+      organizer: {
         id: organization._id,
-        name: organization.organizationName,
+        fullName: organization.organizationName,
         email: organization.email
       }
     });
+
   } catch (err) {
     console.error('Login error:', err);
     res.status(500).json({ message: 'Login error', error: err.message });
