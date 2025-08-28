@@ -69,10 +69,14 @@ const registerOrganization = async (req, res) => {
 const loginOrganization = async (req, res) => {
   try {
     const { email, password } = req.body;
-    console.log('Login attempt for organization:', email, password ? 'password provided' : 'no password provided');
-    
-    // חיפוש הארגון לפי אימייל
-    const organization = await Organization.findOne({ email });
+
+    // נירמול האימייל
+    const normalizedEmail = email.toLowerCase().trim();
+
+    console.log('Login attempt for organization:', normalizedEmail, password ? 'password provided' : 'no password provided');
+
+    // חיפוש הארגון לפי אימייל מנורמל
+    const organization = await Organization.findOne({ email: normalizedEmail });
     if (!organization) {
       return res.status(404).json({ message: 'Organization not found' });
     }
