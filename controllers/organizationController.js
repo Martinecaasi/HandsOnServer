@@ -87,13 +87,8 @@ const loginOrganization = async (req, res) => {
 
     res.status(200).json({
       message: 'Login successful',
-      organization: {
-        _id: organization._id,
-        name: organization.organizationName,
-        email: organization.email
-      }
+      organization: organization
     });
-
 
   } catch (err) {
     console.error('Login error:', err);
