@@ -70,9 +70,7 @@ const loginOrganization = async (req, res) => {
   try {
     const { email, password } = req.body;
 
-    // Normalize email
     const normalizedEmail = email.toLowerCase().trim();
-
     console.log('Login attempt for organization:', normalizedEmail);
 
     const organization = await Organization.findOne({ email: normalizedEmail });
@@ -87,7 +85,16 @@ const loginOrganization = async (req, res) => {
 
     res.status(200).json({
       message: 'Login successful',
-      organization: organization
+      organization: {
+        _id: organization._id,
+        organizationName: organization.organizationName,
+        email: organization.email,
+        phoneNumber: organization.phoneNumber,
+        address: organization.address,
+        about: organization.about,
+        profileImage: organization.profileImage,
+        role: organization.role
+      }
     });
 
   } catch (err) {
